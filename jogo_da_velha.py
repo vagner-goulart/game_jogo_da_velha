@@ -10,8 +10,8 @@ def jogar_teste():
     xis = " x "
     circ = " o "
 
-    for i in range(3):
-        # isso add xis
+    def coloca_xis_ou_circ(xis_ou_circ):
+
         numero_aleatorio_xis = random.randint(0, 2)
         numero_aleatorio_linha = random.randint(0, 2)
 
@@ -19,7 +19,7 @@ def jogar_teste():
 
             if linhas[numero_aleatorio_linha][numero_aleatorio_xis] == " + ":
 
-                linhas[numero_aleatorio_linha][numero_aleatorio_xis] = xis
+                linhas[numero_aleatorio_linha][numero_aleatorio_xis] = xis_ou_circ
                 break
 
             else:
@@ -30,26 +30,14 @@ def jogar_teste():
 
                 numero_aleatorio_xis = random.randint(0, 2)
 
+
+
+    for i in range(4):
+        # isso add xis
+        coloca_xis_ou_circ(xis)
 
         # isso add circ
-        numero_aleatorio_xis = random.randint(0, 2)
-        numero_aleatorio_linha = random.randint(0, 2)
-
-        while True:
-
-            if linhas[numero_aleatorio_linha][numero_aleatorio_xis] == " + ":
-
-                linhas[numero_aleatorio_linha][numero_aleatorio_xis] = circ
-                break
-
-            else:
-
-                # chance 50% de escolher outra linha. Arrumar dps
-                if random.randint(0, 10) <= 5:
-                    numero_aleatorio_linha = random.randint(0, 2)
-
-                numero_aleatorio_xis = random.randint(0, 2)
-
+        coloca_xis_ou_circ(circ)
 
 
     print("".join(linha_1))
