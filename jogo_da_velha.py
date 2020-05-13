@@ -1,87 +1,133 @@
 import random
 
+linha_1 = [" + "] * 3
+linha_2 = [" + "] * 3
+linha_3 = [" + "] * 3
+linhas = [linha_1, linha_2, linha_3]
 
-def jogar_teste():
-    linha_1 = [" + "] * 3
-    linha_2 = [" + "] * 3
-    linha_3 = [" + "] * 3
-    linhas = [linha_1, linha_2, linha_3]
+xis = " x "
+circ = " o "
 
-    xis = " x "
-    circ = " o "
+jogar_primeiro = random.randint(0, 1)
 
-    def coloca_xis_ou_circ(xis_ou_circ):
+ninguem_ganhou = False
 
-        numero_aleatorio_xis = random.randint(0, 2)
-        numero_aleatorio_linha = random.randint(0, 2)
+def coloca_xis_ou_circ(xis_ou_circ):
+    numero_aleatorio_xis = random.randint(0, 2)
+    numero_aleatorio_linha = random.randint(0, 2)
 
-        while True:
+    while True:
 
-            if linhas[numero_aleatorio_linha][numero_aleatorio_xis] == " + ":
+        if linhas[numero_aleatorio_linha][numero_aleatorio_xis] == " + ":
 
-                linhas[numero_aleatorio_linha][numero_aleatorio_xis] = xis_ou_circ
-                break
+            linhas[numero_aleatorio_linha][numero_aleatorio_xis] = xis_ou_circ
+            break
 
-            else:
+        else:
 
-                # chance 50% de escolher outra linha. Arrumar dps
-                if random.randint(0, 10) <= 5:
-                    numero_aleatorio_linha = random.randint(0, 2)
+            # chance 50% de escolher outra linha. Arrumar dps
+            if random.randint(0, 10) <= 5:
+                numero_aleatorio_linha = random.randint(0, 2)
 
-                numero_aleatorio_xis = random.randint(0, 2)
-
-
-
-    for i in range(4):
-        # isso add xis
-        coloca_xis_ou_circ(xis)
-
-        # isso add circ
-        coloca_xis_ou_circ(circ)
+            numero_aleatorio_xis = random.randint(0, 2)
 
 
+def imprime_linhas():
     print("".join(linha_1))
     print("".join(linha_2))
     print("".join(linha_3))
-
-    xis_diagonal_1 = linha_2[1] == xis and linha_1[0] == xis and linha_3[2] == xis
-    xis_diagonal_2 = linha_2[1] == xis and linha_3[0] == xis and linha_1[2] == xis
-
-    circulo_diagonal_1 = linha_2[1] == circ and linha_1[0] == circ and linha_3[2] == circ
-    circulo_diagonal_2 = linha_2[1] == circ and linha_3[0] == circ and linha_1[2] == circ
+    print()
 
 
-    ganhou_em_diagonal = xis_diagonal_1 or xis_diagonal_2 or circulo_diagonal_1 or circulo_diagonal_2
+def logica_perdeu_ganhou():
+    global ninguem_ganhou
+
+    diagonal_esq_e_dir = linha_1[0] == linha_2[1] == linha_3[2] or linha_1[2] == linha_2[1] == linha_3[0]
+
+    ganhou_em_diagonal = linha_2[1] != " + " and diagonal_esq_e_dir
 
     contador = 0
+    venceu = False
 
     while contador < 3:
 
-        if linhas[contador].count(xis) == 3 or linhas[contador].count(circ) == 3:
-            ganhou_em_horizontal = True
-        else:
-            ganhou_em_horizontal = False
+        #print("teste", contador)
 
-        vertical_xis = "x" in linha_1[contador] and "x" in linha_2[contador] and "x" in linha_3[contador]
-        vertical_circ = "o" in linha_1[contador] and "o" in linha_2[contador] and "o" in linha_3[contador]
+        ganhou_em_horizontal = linhas[contador][0] != " + " and len(set(linhas[contador])) == 1
 
-        ganhou_em_vertical = vertical_xis or vertical_circ
+        ganhou_em_vertical = linha_1[contador] != " + " and linha_1[contador] == linha_2[contador] == linha_3[contador]
+
+        ninguem_ganhou = ganhou_em_horizontal == ganhou_em_vertical == ganhou_em_diagonal
+
         if ganhou_em_vertical:
             print("Ganhou vertical", ganhou_em_vertical)
+            venceu = True
             break
 
         elif ganhou_em_horizontal:
             print("Ganhou horizontal", ganhou_em_horizontal)
+            venceu = True
             break
 
         elif ganhou_em_diagonal:
             print("Ganhou diagonal", ganhou_em_diagonal)
+            venceu = True
             break
 
-        else:
-            contador += 1
+        contador += 1
+    return venceu
+
+def zerar_var_linha_e_linhas():
+    global linha_1, linha_2, linha_3,linhas, jogar_primeiro
+
+    linha_1 = [" + "] * 3
+    linha_2 = [" + "] * 3
+    linha_3 = [" + "] * 3
+
+    linhas = [linha_1, linha_2, linha_3]
+
+    jogar_primeiro = random.randint(0, 1)
+
+
+def jogar_testes():
+
+    num_jogada = 0
+
+    if jogar_primeiro == 1:
+        parametro_xis_ou_circ_0 = xis
+        parametro_xis_ou_circ_1 = circ
+    else:
+        parametro_xis_ou_circ_1 = circ
+        parametro_xis_ou_circ_0 = xis
+
+    while True:
+
+        coloca_xis_ou_circ(parametro_xis_ou_circ_0)  # add X
+        num_jogada += 1
+        #print("colocou x")
+        if num_jogada >= 5 and logica_perdeu_ganhou():
+            print("X ganhou")
+            break
+        elif num_jogada >= 9 and ninguem_ganhou:
+            print("Draw")
+            break
+
+        coloca_xis_ou_circ(parametro_xis_ou_circ_1)  # add O
+        num_jogada += 1
+        #print("colocou O")
+        if num_jogada >= 5 and logica_perdeu_ganhou():
+            print("O ganhou")
+            break
+        elif num_jogada >= 9 and ninguem_ganhou:
+            print("Draw")
+            break
+
+
+    imprime_linhas()
+
+    zerar_var_linha_e_linhas()
 
     print()
 
-for i in range(5):
-    jogar_teste()
+for x in range(10):
+    jogar_testes()
